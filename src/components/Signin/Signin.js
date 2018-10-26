@@ -20,7 +20,6 @@ class Signin extends Component {
 
   onSubmitSignIn = () => {
     const { onRouteChange, loadUser } = this.props;
-    console.log(this.state);
     fetch("http://localhost:4000/signin", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
