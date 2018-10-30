@@ -44,6 +44,12 @@ class Register extends Component {
       });
   };
 
+  handleKeyPress = e => {
+    if (e.key === "Enter") {
+      this.onSubmitRegister();
+    }
+  };
+
   render() {
     return (
       <article className="br3 ba dark-gray b--black-10 mv4 w-100 w-50-m w-25-l mw6 shadow-5 center">
@@ -85,6 +91,7 @@ class Register extends Component {
                   name="password"
                   id="password"
                   onChange={this.onPasswordChange}
+                  onKeyPress={this.handleKeyPress}
                 />
               </div>
             </fieldset>
