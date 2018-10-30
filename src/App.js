@@ -92,12 +92,13 @@ class App extends Component {
     })
       .then(data => data.json())
       .then(response => {
-        if (response) {
+        if (response.rawData.outputs[0].data.regions) {
           fetch(`${window.BACKEND_PATH}/image`, {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-              id: this.state.user.id // currently logged in user
+              id: this.state.user.id, // currently logged in user
+              count: response.rawData.outputs[0].data.regions.length
             })
           })
             .then(response => response.json())
@@ -105,8 +106,8 @@ class App extends Component {
               // will update the display on the fly without having to relogin
               this.setState(Object.assign(this.state.user, { entries: count }));
             });
+          this.displayFaceBox(this.calculateFaceLocation(response));
         }
-        this.displayFaceBox(this.calculateFaceLocation(response));
       })
       .catch(err => {
         console.log(err);
