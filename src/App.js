@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import Particles from "react-particles-js";
-import Clarifai from "clarifai";
 import Navigation from "./components/Navigation/Navigation";
 import Logo from "./components/Logo/Logo";
 import Rank from "./components/Rank/Rank";
@@ -10,9 +9,11 @@ import Signin from "./components/Signin/Signin";
 import Register from "./components/Register/Register";
 import "./App.css";
 
-const app = new Clarifai.App({
-  apiKey: "27d7e66e698a4327a7d49020ab4a53ca"
-});
+if (process.env.NODE_ENV === "production") {
+  window.BACKEND_PATH = "https://smart-brain-backend.herokuapp.com";
+} else {
+  window.BACKEND_PATH = "http://localhost:4000";
+}
 
 const ParticlesOptions = {
   particles: {
@@ -83,11 +84,17 @@ class App extends Component {
 
   onPictureSubmit = () => {
     this.setState({ imageUrl: this.state.input });
-    app.models
-      .predict(Clarifai.FACE_DETECT_MODEL, this.state.input)
+    fetch(`${window.BACKEND_PATH}/imageurl`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        input: this.state.input
+      })
+    })
+      .then(data => data.json())
       .then(response => {
         if (response) {
-          fetch("http://localhost:4000/image", {
+          fetch(`${window.BACKEND_PATH}/image`, {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
@@ -102,12 +109,15 @@ class App extends Component {
         }
         this.displayFaceBox(this.calculateFaceLocation(response));
       })
-      .catch(err => console.log(err));
+      .catch(err => {
+        console.log(err);
+      });
   };
 
   onRouteChange = route => {
     if (route === "signout") {
       this.setState(initialState);
+      route = "signin";
     } else if (route === "home") {
       this.setState({ isSignedIn: true });
     }

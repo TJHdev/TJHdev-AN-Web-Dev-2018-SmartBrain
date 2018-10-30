@@ -26,7 +26,7 @@ class Register extends Component {
     const { registerName, registerEmail, registerPassword } = this.state;
     const { onRouteChange, loadUser } = this.props;
 
-    fetch("http://localhost:4000/register", {
+    fetch(`${window.BACKEND_PATH}/register`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
