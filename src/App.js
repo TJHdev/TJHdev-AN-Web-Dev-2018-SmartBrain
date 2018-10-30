@@ -9,11 +9,10 @@ import Signin from "./components/Signin/Signin";
 import Register from "./components/Register/Register";
 import "./App.css";
 
-if (process.env.NODE_ENV === "production") {
-  window.BACKEND_PATH = "https://smart-brain-backend.herokuapp.com";
-} else {
-  window.BACKEND_PATH = "http://localhost:4000";
-}
+window.BACKEND_PATH =
+  process.env.NODE_ENV === "production"
+    ? "https://smart-brain-backend.herokuapp.com"
+    : "https://smart-brain-backend.herokuapp.com";
 
 const ParticlesOptions = {
   particles: {
