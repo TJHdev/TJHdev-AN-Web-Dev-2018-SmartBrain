@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import Particles from "react-particles-js";
 import Navigation from "./components/Navigation/Navigation";
 import Logo from "./components/Logo/Logo";
 import Rank from "./components/Rank/Rank";
@@ -7,24 +6,13 @@ import ImageLinkform from "./components/ImageLinkForm/ImageLinkForm";
 import FaceRecognition from "./components/FaceRecognition/FaceRecognition";
 import Signin from "./components/Signin/Signin";
 import Register from "./components/Register/Register";
+import ParticlesNoRerender from "./components/ParticlesNoRerender";
 import "./App.css";
 
 window.BACKEND_PATH =
   process.env.NODE_ENV === "production"
     ? "https://smart-brain-backend.herokuapp.com"
     : "https://smart-brain-backend.herokuapp.com";
-
-const ParticlesOptions = {
-  particles: {
-    number: {
-      value: 30,
-      density: {
-        enable: true,
-        value_area: 800
-      }
-    }
-  }
-};
 
 const initialState = {
   input: "",
@@ -133,7 +121,7 @@ class App extends Component {
     const { isSignedIn, imageUrl, route, boxs } = this.state;
     return (
       <div className="App">
-        <Particles className="particles" params={ParticlesOptions} />
+        <ParticlesNoRerender />
         <Navigation
           onRouteChange={this.onRouteChange}
           isSignedIn={isSignedIn}
