@@ -6,7 +6,7 @@ import ImageLinkform from "./components/ImageLinkForm/ImageLinkForm";
 import FaceRecognition from "./components/FaceRecognition/FaceRecognition";
 import Signin from "./components/Signin/Signin";
 import Register from "./components/Register/Register";
-import ParticlesNoRerender from "./components/ParticlesNoRerender";
+import ParticlesNoRerender from "./components/ParticlesNoRerender/ParticlesNoRerender";
 import "./App.css";
 
 window.BACKEND_PATH =
@@ -47,7 +47,7 @@ class App extends Component {
     });
   };
 
-  calculateFaceLocation = data => {
+  calculateFacesLocation = data => {
     const image = document.getElementById("inputimage");
     const width = Number(image.width);
     const height = Number(image.height);
@@ -63,7 +63,7 @@ class App extends Component {
     });
   };
 
-  displayFaceBox = boxs => {
+  displayFaceBoxs = boxs => {
     this.setState({ boxs: boxs });
   };
 
@@ -96,9 +96,9 @@ class App extends Component {
               // will update the display on the fly without having to relogin
               this.setState(Object.assign(this.state.user, { entries: count }));
             });
-          this.displayFaceBox(this.calculateFaceLocation(response.rawData));
+          this.displayFaceBoxs(this.calculateFacesLocation(response.rawData));
         } else {
-          this.displayFaceBox({}); // clears the box if no data returned
+          this.displayFaceBoxs({}); // clears the box if no data returned
         }
       })
       .catch(err => {
