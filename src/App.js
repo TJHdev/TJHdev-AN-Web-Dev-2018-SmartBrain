@@ -12,7 +12,7 @@ import "./App.css";
 window.BACKEND_PATH =
   process.env.NODE_ENV === "production"
     ? "https://smart-brain-backend.herokuapp.com"
-    : "https://smart-brain-backend.herokuapp.com";
+    : "http://localhost:4000";
 
 const initialState = {
   input: "",
@@ -108,8 +108,7 @@ class App extends Component {
 
   onRouteChange = route => {
     if (route === "signout") {
-      this.setState(initialState);
-      route = "signin";
+      return this.setState(initialState);
     } else if (route === "home") {
       this.setState({ isSignedIn: true });
     }
