@@ -7,6 +7,8 @@ import FaceRecognition from "./components/FaceRecognition/FaceRecognition";
 import Signin from "./components/Signin/Signin";
 import Register from "./components/Register/Register";
 import ParticlesNoRerender from "./components/ParticlesNoRerender/ParticlesNoRerender";
+import Modal from "./components/Modal/Modal";
+import Profile from "./components/Profile/Profile";
 import "./App.css";
 
 window.BACKEND_PATH =
@@ -20,6 +22,7 @@ const initialState = {
   box: [{}, {}],
   route: "signin",
   isSignedIn: false,
+  isProfileOpen: false,
   user: {
     id: "",
     name: "",
@@ -115,16 +118,38 @@ class App extends Component {
     this.setState({ route: route });
   };
 
+  toggleProfileModal = () => {
+    this.setState(prevState => {
+      return {
+        ...prevState,
+        isProfileOpen: !prevState.isProfileOpen
+      };
+    });
+  };
+
   render() {
-    const { name, entries } = this.state.user;
-    const { isSignedIn, imageUrl, route, boxs } = this.state;
+    const { name, entries, joined } = this.state.user;
+    const { isSignedIn, isProfileOpen, imageUrl, route, boxs } = this.state;
     return (
       <div className="App">
         <ParticlesNoRerender />
         <Navigation
+          className="tr"
           onRouteChange={this.onRouteChange}
           isSignedIn={isSignedIn}
+          toggleProfileModal={this.toggleProfileModal}
         />
+        {isProfileOpen && (
+          <Modal>
+            <Profile
+              name={name}
+              entries={entries}
+              joined={joined}
+              toggleProfileModal={this.toggleProfileModal}
+              isProfileOpen={isProfileOpen}
+            />
+          </Modal>
+        )}
         {route === "home" ? (
           <div>
             <Logo />

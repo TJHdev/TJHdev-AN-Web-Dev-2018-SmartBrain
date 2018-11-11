@@ -43,7 +43,9 @@ class ProfileIcon extends React.Component {
               backgroundColor: "rgba(255, 255, 255, 0.8)"
             }}
           >
-            <DropdownItem>View Profile</DropdownItem>
+            <DropdownItem onClick={this.props.toggleProfileModal}>
+              View Profile
+            </DropdownItem>
             <DropdownItem
               onClick={() => {
                 this.props.onRouteChange("signout");

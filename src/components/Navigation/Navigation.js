@@ -3,16 +3,19 @@ import ProfileIcon from "../Profile/ProfileIcon";
 
 import "./Navigation.css";
 
-const Navigation = ({ onRouteChange, isSignedIn }) => {
+const Navigation = ({ onRouteChange, isSignedIn, toggleProfileModal }) => {
   if (isSignedIn) {
     return (
       <nav>
-        <ProfileIcon onRouteChange={onRouteChange} />
+        <ProfileIcon
+          onRouteChange={onRouteChange}
+          toggleProfileModal={toggleProfileModal}
+        />
       </nav>
     );
   } else {
     return (
-      <nav>
+      <nav className="tr">
         <p
           onClick={() => onRouteChange("signin")}
           className="f3 link dim black underline pa3 pointer"
