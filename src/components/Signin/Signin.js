@@ -18,8 +18,19 @@ class Signin extends Component {
     this.setState({ signInPassword: event.target.value });
   };
 
+  handleKeyPress = e => {
+    if (e.key === "Enter") {
+      this.onSubmitSignIn();
+    }
+  };
+
+  saveAuthTokenInSession = token => {
+    window.sessionStorage.setItem("token", token);
+  };
+
   onSubmitSignIn = () => {
     const { onRouteChange, loadUser } = this.props;
+
     fetch(`${window.BACKEND_PATH}/signin`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -29,18 +40,26 @@ class Signin extends Component {
       })
     })
       .then(response => response.json())
-      .then(user => {
-        if (user.id) {
-          loadUser(user);
-          onRouteChange("home");
+      .then(data => {
+        if (data.userId && data.success === "true") {
+          this.saveAuthTokenInSession(data.token);
+          return fetch(`${window.BACKEND_PATH}/profile/${data.userId}`, {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: data.token
+            }
+          })
+            .then(resp => resp.json())
+            .then(user => {
+              if (user && user.email) {
+                loadUser(user);
+                onRouteChange("home");
+              }
+            })
+            .catch(console.log);
         }
       });
-  };
-
-  handleKeyPress = e => {
-    if (e.key === "Enter") {
-      this.onSubmitSignIn();
-    }
   };
 
   render() {
