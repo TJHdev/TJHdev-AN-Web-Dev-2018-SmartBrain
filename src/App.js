@@ -128,7 +128,7 @@ class App extends Component {
   };
 
   render() {
-    const { name, entries, joined } = this.state.user;
+    const { user } = this.state;
     const { isSignedIn, isProfileOpen, imageUrl, route, boxs } = this.state;
     return (
       <div className="App">
@@ -142,18 +142,17 @@ class App extends Component {
         {isProfileOpen && (
           <Modal>
             <Profile
-              name={name}
-              entries={entries}
-              joined={joined}
-              toggleProfileModal={this.toggleProfileModal}
+              user={user}
               isProfileOpen={isProfileOpen}
+              toggleProfileModal={this.toggleProfileModal}
+              loadUser={this.loadUser}
             />
           </Modal>
         )}
         {route === "home" ? (
           <div>
             <Logo />
-            <Rank name={name} entries={entries} />
+            <Rank name={user.name} entries={user.entries} />
             <ImageLinkform
               onInputChange={this.onInputChange}
               onButtonSubmit={this.onPictureSubmit}
