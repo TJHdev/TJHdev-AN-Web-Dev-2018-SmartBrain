@@ -84,23 +84,27 @@ class App extends Component {
   };
 
   calculateFacesLocation = data => {
-    const image = document.getElementById("inputimage");
-    const width = Number(image.width);
-    const height = Number(image.height);
+    if (data && data.outputs) {
+      const image = document.getElementById("inputimage");
+      const width = Number(image.width);
+      const height = Number(image.height);
 
-    return data.outputs[0].data.regions.map(faceArea => {
-      faceArea = faceArea.region_info.bounding_box;
-      return {
-        leftCol: faceArea.left_col * width,
-        topRow: faceArea.top_row * height,
-        rightCol: width - faceArea.right_col * width,
-        bottomRow: height - faceArea.bottom_row * height
-      };
-    });
+      return data.outputs[0].data.regions.map(faceArea => {
+        faceArea = faceArea.region_info.bounding_box;
+        return {
+          leftCol: faceArea.left_col * width,
+          topRow: faceArea.top_row * height,
+          rightCol: width - faceArea.right_col * width,
+          bottomRow: height - faceArea.bottom_row * height
+        };
+      });
+    }
   };
 
   displayFaceBoxs = boxs => {
-    this.setState({ boxs: boxs });
+    if (boxs) {
+      this.setState({ boxs: boxs });
+    }
   };
 
   onInputChange = event => {
@@ -109,37 +113,48 @@ class App extends Component {
 
   onPictureSubmit = () => {
     this.setState({ imageUrl: this.state.input });
-    fetch(`${window.BACKEND_PATH}/imageurl`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        input: this.state.input
+    const token = window.sessionStorage.getItem("token");
+    if (token) {
+      fetch(`${window.BACKEND_PATH}/imageurl`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: token
+        },
+        body: JSON.stringify({
+          input: this.state.input
+        })
       })
-    })
-      .then(data => data.json())
-      .then(response => {
-        if (response.rawData.outputs[0].data.regions) {
-          fetch(`${window.BACKEND_PATH}/image`, {
-            method: "PUT",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              id: this.state.user.id, // currently logged in user
-              count: response.rawData.outputs[0].data.regions.length
+        .then(data => data.json())
+        .then(response => {
+          if (response.rawData.outputs[0].data.regions) {
+            fetch(`${window.BACKEND_PATH}/image`, {
+              method: "PUT",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: token
+              },
+              body: JSON.stringify({
+                id: this.state.user.id, // currently logged in user
+                count: response.rawData.outputs[0].data.regions.length
+              })
             })
-          })
-            .then(response => response.json())
-            .then(count => {
-              // will update the display on the fly without having to relogin
-              this.setState(Object.assign(this.state.user, { entries: count }));
-            });
-          this.displayFaceBoxs(this.calculateFacesLocation(response.rawData));
-        } else {
-          this.displayFaceBoxs({}); // clears the box if no data returned
-        }
-      })
-      .catch(err => {
-        console.log(err);
-      });
+              .then(response => response.json())
+              .then(count => {
+                // will update the display on the fly without having to relogin
+                this.setState(
+                  Object.assign(this.state.user, { entries: count })
+                );
+              });
+            this.displayFaceBoxs(this.calculateFacesLocation(response.rawData));
+          } else {
+            this.displayFaceBoxs({}); // clears the box if no data returned
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
+    }
   };
 
   onRouteChange = route => {
