@@ -49,7 +49,24 @@ class ProfileIcon extends React.Component {
             <DropdownItem
               onClick={() => {
                 this.props.onRouteChange("signout");
-                window.sessionStorage.removeItem("token");
+                const token = window.sessionStorage.getItem("token");
+                if (token) {
+                  fetch(`${window.BACKEND_PATH}/signout`, {
+                    method: "DELETE",
+                    headers: {
+                      "Content-Type": "application/json",
+                      Authorization: token
+                    },
+                    body: JSON.stringify({})
+                  })
+                    .then(resp => {
+                      console.log("Removed session token from server");
+                    })
+                    .catch(err => {
+                      console.log(err);
+                    });
+                  window.sessionStorage.removeItem("token");
+                }
               }}
             >
               Signout

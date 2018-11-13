@@ -41,8 +41,10 @@ class Profile extends React.Component {
         })
       })
         .then(resp => {
-          this.props.toggleProfileModal();
-          this.props.loadUser({ ...this.props.user, ...data });
+          if (resp.status === 200 || resp.status === 304) {
+            this.props.toggleProfileModal();
+            this.props.loadUser({ ...this.props.user, ...data });
+          }
         })
         .catch(err => {
           console.log(err);
